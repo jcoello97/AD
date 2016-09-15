@@ -1,0 +1,41 @@
+20160913
+Synaptic
+|-> monodevelop 
+|-> monodevelop-database
+|-> monodevelop-nunit
+|-> monodevelop-versioncontrol
+|-> monodoc-browser
+|-> monodoc-gtk2.0-manual
+|-> monodoc-mysql-manual
+-
+|->git
+
+en bitnami.org descargamos LAMP (bitnami-lampstack-5.6.25-0-linux-x64-installer.run o el que toque)
+
+Y le ponemos permiso de ejecucion en propiedades y hacemos doble clic para instalar.
+
+20160915
+Hemos creado el repositorio 'AD' en github.
+Clonado local:
+git clone https://github.com/jcoello97/AD.git
+
+Hemos configurado git para poder hacer push:
+git config --global user.name jcoello97
+git config --global user.email dam.jcoello@institutoserpis.org
+git config --global push.default simple
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
