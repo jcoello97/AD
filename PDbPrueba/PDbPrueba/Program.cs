@@ -9,9 +9,8 @@ namespace PDbPrueba
 		public static void Main (string[] args)
 		{
 			IDbConnection dbcon = null;
-			IDbCommand dbcmd = null;
-			IDbCommand dbcmdLeerID = null;
-			String opcion, idBuscado,nombreNuevo,id;
+			IDbCommand dbcmd = null, dbcmdLeerID = null;
+			String opcion, idBuscado, nombreNuevo, id;
 			IDataReader reader=null;
 			Boolean encontrado=false;
 
@@ -31,11 +30,9 @@ namespace PDbPrueba
 				Console.WriteLine ("4. Listar todos");
 				Console.WriteLine ("0. Salir");
 				Console.WriteLine ("Elige una opción (numero): ");
-
 				opcion = Console.ReadLine ();
 
-				long num = leerNumero (opcion);
-				switch (num) 
+				switch (leerNumero (opcion)) 
 				{
 					case 0:
 					Console.Clear();
@@ -56,8 +53,7 @@ namespace PDbPrueba
 
 					dbcmd.Dispose ();
 					Console.WriteLine("\nNueva fila añadida con éxito.");
-					Console.WriteLine("Pulsa cualquier tecla para voler.");
-					Console.ReadLine();
+					PulsarParaVolver();
 						break;
 
 					case 2:
@@ -66,16 +62,14 @@ namespace PDbPrueba
 
 					Console.WriteLine ("Escribe el ID de la fila que se va a editar: ");
 					idBuscado = Console.ReadLine ();
-
-					reader = dbcmdLeerID.ExecuteReader ();
-					while (reader.Read()&& encontrado== false) 
+					reader = dbcmdLeerID.ExecuteReader (); //Buscamos si existe la idBuscado
+					while (reader.Read() && encontrado== false) 
 					{
 						id =""+reader ["id"]+"";
 						if(idBuscado.Equals(id) )
 						{
 							Console.WriteLine("*Número de identificacíon (ID) encontrada.");
 							encontrado=true;
-
 						}
 					}
 					dbcmdLeerID.Dispose ();
@@ -87,13 +81,12 @@ namespace PDbPrueba
 						dbcmd.CommandText ="update categoria set nombre=(@nuevo) where id='"+idBuscado+"';";
 						AddParametros (dbcmd,"nuevo",nombreNuevo);
 						Console.WriteLine("\nEditada con éxito.");
-						Console.WriteLine("\nPulsa cualquier tecla para voler.");
-						Console.ReadLine();
+						PulsarParaVolver();
 
 					}else
 					{
-						Console.WriteLine("\n*Número de identificacíon (ID) no encontrada.\nPulsa cualquier tecla para voler.");
-						Console.ReadLine();
+						Console.WriteLine("\n*Número de identificacíon (ID) no encontrada.");
+						PulsarParaVolver();
 					}
 					reader.Close ();
 					dbcmd.Dispose ();
@@ -102,12 +95,9 @@ namespace PDbPrueba
 					case 3:
 					Console.Clear ();
 					Console.WriteLine ("******ELIMINAR FILA******");
-
 					Console.WriteLine ("Escribe el ID de la fila que se va a eliminar: ");
 					idBuscado = Console.ReadLine ();
-
-
-					reader = dbcmdLeerID.ExecuteReader ();
+					reader = dbcmdLeerID.ExecuteReader (); //Buscamos si existe la idBuscado
 					while (reader.Read()&& encontrado== false) 
 					{
 						id =""+reader ["id"]+"";
@@ -119,45 +109,36 @@ namespace PDbPrueba
 					}
 					dbcmdLeerID.Dispose ();
 					reader.Close();
-
 					if (encontrado !=false)
 					{
-
 						dbcmd.CommandText ="delete from categoria where id='"+idBuscado+"';";
 						dbcmd.ExecuteNonQuery();
 						dbcmd.Dispose ();
 						Console.WriteLine("Borrada con éxito.");
-						Console.WriteLine("\nPulsa cualquier tecla para voler.");
-						Console.ReadLine();
-
+						PulsarParaVolver();
 					}else
 					{
-						Console.WriteLine("\n*Número de identificacíon (ID) no encontrada.\nPulsa cualquier tecla para voler.");
-						Console.ReadLine();
+						Console.WriteLine("\n*Número de identificacíon (ID) no encontrada");
+						PulsarParaVolver();
 					}
 						break;
 
 					case 4:
 					Console.Clear ();
 					Console.WriteLine ("******MOSTRAR FILAS******");
-
 					dbcmd.CommandText = "select * from categoria";
-
 					reader = dbcmd.ExecuteReader ();
 					while (reader.Read()) {
 						Console.WriteLine ("ID: " + reader ["id"] + "\t Nombre: " + reader ["nombre"]);
 					}
-
 					reader.Close ();
 					dbcmd.Dispose ();
-					Console.WriteLine("\nPulsa cualquier tecla para voler.");
-					Console.ReadLine();
+					PulsarParaVolver();
 						break;
 
 					default:
-					Console.WriteLine("\nElige solo un numero de las opciones del menu." +
-					                  "\nPulsa cualquier tecla para voler.");
-					Console.ReadLine();
+					Console.WriteLine("\nElige solo un numero de las opciones del menu.");
+					PulsarParaVolver();
 						break;
 				}
 
@@ -178,7 +159,7 @@ namespace PDbPrueba
 					salir = true;
 				}
 			}
-			return 8; //Para que vaya al default del switch
+			return 8; //Para que vaya al case default del switch
 		}
 		private static void AddParametros(IDbCommand comando,String clave, String valor)
 		{
@@ -187,6 +168,11 @@ namespace PDbPrueba
 			dbDataParameter.Value = valor;
 			comando.Parameters.Add (dbDataParameter);
 			comando.ExecuteNonQuery ();
+		}
+		private static void PulsarParaVolver()
+		{
+			Console.WriteLine("\nPulsa cualquier tecla para voler.");
+			Console.ReadLine();
 		}
 	}
 }
