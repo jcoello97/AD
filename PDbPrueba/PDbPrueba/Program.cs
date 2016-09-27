@@ -6,14 +6,14 @@ namespace PDbPrueba
 {
 	class MainClass
 	{
+		protected static IDbConnection dbcon = null;
+		protected static IDbCommand dbcmd = null, dbcmdLeerID = null;
+		protected static String opcion, idBuscado, nombreNuevo, id;
+		protected static IDataReader reader = null;
+		protected static Boolean encontrado = false;
+
 		public static void Main (string[] args)
 		{
-			IDbConnection dbcon = null;
-			IDbCommand dbcmd = null, dbcmdLeerID = null;
-			String opcion, idBuscado, nombreNuevo, id;
-			IDataReader reader=null;
-			Boolean encontrado=false;
-
 			dbcon = new MySqlConnection ("Database=dbprueba;User ID=root;Password=sistemas");
 			dbcmd = dbcon.CreateCommand (); //para ejecutar comandos sql
 			dbcmdLeerID = dbcon.CreateCommand ();
@@ -35,105 +35,19 @@ namespace PDbPrueba
 				switch (leerNumero (opcion)) 
 				{
 					case 0:
-					Console.Clear();
-					Console.WriteLine ("Cerrando programa.. ");
-					System.Environment.Exit (-1);
-					dbcon.Close ();
-					dbcon = null;
+					CerrarPrograma();
 						break;
-
 					case 1:
-					Console.Clear ();
-					Console.WriteLine ("******NUEVA FILA******");
-					Console.WriteLine ("Escribe el nombre que se va añadir en la fila: ");
-				 	nombreNuevo = Console.ReadLine ();
-
-					dbcmd.CommandText = "insert into categoria (nombre) values (@nuevo)";
-					AddParametros (dbcmd,"nuevo",nombreNuevo);
-
-					dbcmd.Dispose ();
-					Console.WriteLine("\nNueva fila añadida con éxito.");
-					PulsarParaVolver();
+					NuevaFila();
 						break;
-
 					case 2:
-					Console.Clear ();
-					Console.WriteLine ("******EDITAR FILA******");
-
-					Console.WriteLine ("Escribe el ID de la fila que se va a editar: ");
-					idBuscado = Console.ReadLine ();
-					reader = dbcmdLeerID.ExecuteReader (); //Buscamos si existe la idBuscado
-					while (reader.Read() && encontrado== false) 
-					{
-						id =""+reader ["id"]+"";
-						if(idBuscado.Equals(id) )
-						{
-							Console.WriteLine("*Número de identificacíon (ID) encontrada.");
-							encontrado=true;
-						}
-					}
-					dbcmdLeerID.Dispose ();
-					reader.Close();
-					if (encontrado !=false)
-					{
-						Console.WriteLine("Escribe el nombre nuevo que se va añadir en la fila:");
-						nombreNuevo = Console.ReadLine ();
-						dbcmd.CommandText ="update categoria set nombre=(@nuevo) where id='"+idBuscado+"';";
-						AddParametros (dbcmd,"nuevo",nombreNuevo);
-						Console.WriteLine("\nEditada con éxito.");
-						PulsarParaVolver();
-
-					}else
-					{
-						Console.WriteLine("\n*Número de identificacíon (ID) no encontrada.");
-						PulsarParaVolver();
-					}
-					reader.Close ();
-					dbcmd.Dispose ();
+					EditarFila();
 						break;
-
 					case 3:
-					Console.Clear ();
-					Console.WriteLine ("******ELIMINAR FILA******");
-					Console.WriteLine ("Escribe el ID de la fila que se va a eliminar: ");
-					idBuscado = Console.ReadLine ();
-					reader = dbcmdLeerID.ExecuteReader (); //Buscamos si existe la idBuscado
-					while (reader.Read()&& encontrado== false) 
-					{
-						id =""+reader ["id"]+"";
-						if(idBuscado.Equals(id) )
-						{
-							Console.WriteLine("*Número de identificacíon (ID) encontrada.");
-							encontrado=true;
-						}
-					}
-					dbcmdLeerID.Dispose ();
-					reader.Close();
-					if (encontrado !=false)
-					{
-						dbcmd.CommandText ="delete from categoria where id='"+idBuscado+"';";
-						dbcmd.ExecuteNonQuery();
-						dbcmd.Dispose ();
-						Console.WriteLine("Borrada con éxito.");
-						PulsarParaVolver();
-					}else
-					{
-						Console.WriteLine("\n*Número de identificacíon (ID) no encontrada");
-						PulsarParaVolver();
-					}
+					BorrarFila();
 						break;
-
 					case 4:
-					Console.Clear ();
-					Console.WriteLine ("******MOSTRAR FILAS******");
-					dbcmd.CommandText = "select * from categoria";
-					reader = dbcmd.ExecuteReader ();
-					while (reader.Read()) {
-						Console.WriteLine ("ID: " + reader ["id"] + "\t Nombre: " + reader ["nombre"]);
-					}
-					reader.Close ();
-					dbcmd.Dispose ();
-					PulsarParaVolver();
+					ListarFilas();
 						break;
 
 					default:
@@ -160,6 +74,128 @@ namespace PDbPrueba
 				}
 			}
 			return 8; //Para que vaya al case default del switch
+		}
+		private static void CerrarPrograma()
+		{
+			Console.Clear();
+			Console.WriteLine ("Cerrando programa.. ");
+			System.Environment.Exit (-1);
+			dbcon.Close ();
+			dbcon = null;
+		}
+		private static void NuevaFila()
+		{
+			Console.Clear ();
+			Console.WriteLine ("******NUEVA FILA******");
+			Console.WriteLine ("Escribe el nombre que se va añadir en la fila: ");
+			nombreNuevo = leerString ("Nombre: ");
+			if (!nombreNuevo.Equals ("vacio")) {
+				dbcmd.CommandText = "insert into categoria (nombre) values (@nuevo)";
+				AddParametros (dbcmd,"nuevo",nombreNuevo);
+				dbcmd.Dispose ();
+				Console.WriteLine("\nNueva fila añadida con éxito.");
+			}
+			PulsarParaVolver();
+		}
+		private static void EditarFila()
+		{
+			Console.Clear ();
+			Console.WriteLine ("******EDITAR FILA******");
+
+			Console.WriteLine ("Escribe el ID de la fila que se va a editar: ");
+			idBuscado = Console.ReadLine ();
+
+			//Comprobamos la ID.
+			ComprobarID (idBuscado);
+			dbcmdLeerID.Dispose ();
+			reader.Close();
+
+			if (encontrado !=false)
+			{
+				Console.WriteLine("Escribe el nombre nuevo que se va añadir en la fila:");
+				nombreNuevo = leerString ("Nombre: ");
+				if (!nombreNuevo.Equals ("vacio")) {
+					dbcmd.CommandText = "update categoria set nombre=(@nuevo) where id='" + idBuscado + "';";
+					AddParametros (dbcmd, "nuevo", nombreNuevo);
+					dbcmd.Dispose ();
+					Console.WriteLine ("\nEditada con éxito.");
+				}
+				PulsarParaVolver();
+
+			}else
+			{
+				Console.WriteLine("\n*Número de identificacíon (ID) no encontrada.");
+				PulsarParaVolver();
+			}
+		}
+		private static void BorrarFila()
+		{
+			Console.Clear ();
+			Console.WriteLine ("******ELIMINAR FILA******");
+			Console.WriteLine ("Escribe el ID de la fila que se va a eliminar: ");
+			idBuscado = Console.ReadLine ();
+
+			//Comprobamos la ID.
+			ComprobarID (idBuscado);
+			dbcmdLeerID.Dispose ();
+			reader.Close();
+
+			if (encontrado !=false)
+			{
+				dbcmd.CommandText ="delete from categoria where id='"+idBuscado+"';";
+				dbcmd.ExecuteNonQuery();
+				dbcmd.Dispose ();
+				Console.WriteLine("Borrada con éxito.");
+				PulsarParaVolver();
+			}else
+			{
+				Console.WriteLine("\n*Número de identificacíon (ID) no encontrada");
+				PulsarParaVolver();
+			}
+		}
+		private static void ListarFilas()
+		{
+			Console.Clear ();
+			Console.WriteLine ("******MOSTRAR FILAS******");
+			dbcmd.CommandText = "select * from categoria";
+			reader = dbcmd.ExecuteReader ();
+			while (reader.Read()) {
+				Console.WriteLine ("ID: " + reader ["id"] + "\t Nombre: " + reader ["nombre"]);
+			}
+			reader.Close ();
+			dbcmd.Dispose ();
+			PulsarParaVolver();
+		}
+
+		private static string leerString(string label)
+		{
+			int intentos = 0;
+			while(intentos!=3)
+			{
+				intentos++;
+				Console.Write (label);
+				String data = Console.ReadLine ();
+				data = data.Trim ();
+				if (!data.Equals ("")) 
+					return data;
+				Console.WriteLine ("Error, no puede quedar vacio el nombre.");
+			}
+			Console.WriteLine ("Intentos agotados.");
+			return "vacio";
+		}
+		private static Boolean ComprobarID(String idBuscado)
+		{
+			reader = dbcmdLeerID.ExecuteReader (); //Buscamos si existe la idBuscado
+			while (reader.Read() && encontrado== false) 
+			{
+				id =""+reader ["id"]+"";
+				if(idBuscado.Equals(id) )
+				{
+					Console.WriteLine("*Número de identificacíon (ID) encontrada.");
+					return encontrado=true;
+				}
+			}
+			return encontrado = false;
 		}
 		private static void AddParametros(IDbCommand comando,String clave, String valor)
 		{
