@@ -1,7 +1,7 @@
 using System;
 using Gtk;
 
-namespace PTreeView
+namespace Org.InstitutoSerpis.Ad
 {
 	class MainClass
 	{
