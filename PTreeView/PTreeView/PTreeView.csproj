@@ -61,6 +61,9 @@
     <Reference Include="MySql.Data">
       <HintPath>..\..\..\..\..\usr\lib\cli\MySql.Data-6.4\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Org.InstitutoSerpis.Ad">
+      <HintPath>..\..\Org.InstitutoSerpis.Ad\Org.InstitutoSerpis.Ad\bin\Debug\Org.InstitutoSerpis.Ad.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -75,10 +78,4 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\Org.InstitutoSerpis.Ad\Org.InstitutoSerpis.Ad.csproj">
-      <Project>{EFB49935-8199-4280-B4ED-A700CF30E7DF}</Project>
-      <Name>Org.InstitutoSerpis.Ad</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
