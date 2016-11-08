@@ -40,10 +40,10 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="MySql.Data">
-      <HintPath>..\..\..\PArticulo\PArticulo\bin\Debug\MySql.Data.dll</HintPath>
+      <HintPath>..\..\PArticulo\PArticulo\bin\Debug\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="PArticulo">
-      <HintPath>..\..\..\PArticulo\PArticulo\bin\Debug\PArticulo.exe</HintPath>
+      <HintPath>..\..\PArticulo\PArticulo\bin\Debug\PArticulo.exe</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,7 @@ namespace PArticulo
 	{
 		private const string SELECT_SQL = "select * from articulo";
 		private const string INSERT_SQL = "insert into articulo (nombre, precio, categoria) values (@nombre,@precio,@categoria)";
-
+		private const string DELETE_SQL = "delete from articulo where id = @id";
 		public static IList getList ()
 		{
 			List<Articulo> list = new List<Articulo>();
@@ -42,6 +42,17 @@ namespace PArticulo
 			DbCommandHelper.AddParameters(dbCommand,"precio",articulo.Precio);
 			DbCommandHelper.AddParameters(dbCommand,"categoria",articulo.Categoria);
 			dbCommand.ExecuteNonQuery();
+		}
+		public static void delete(TreeView treeView){
+			IDbCommand dbCommand = ConexionSGBD.Instance.dbConnection.CreateCommand();
+
+			dbCommand.CommandText = DELETE_SQL;
+
+			//TODO
+			long id = (long)TreeViewHelper.GetId (treeView);
+			DbCommandHelper.AddParameters(dbCommand,"id",id);
+			dbCommand.ExecuteNonQuery();
+
 		}
 	}
 }

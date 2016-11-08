@@ -10,12 +10,14 @@ using PArticulo;
 public partial class MainWindow: Gtk.Window
 {	
 	private IDbConnection dbConnection;
+	public static Gtk.Action refrescar;
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
 		/*dbConnection = new MySqlConnection (
 			"Database=dbprueba;User Id=root;Password=sistemas"
 			);*/
+		refrescar = refreshAction;
 
 		dbConnection = ConexionSGBD.Instance.dbConnection;
 		dbConnection.Open ();
@@ -48,12 +50,16 @@ public partial class MainWindow: Gtk.Window
 				);
 			messageDialog.Title = "WARNING BORRAR";
 			ResponseType result = (ResponseType) messageDialog.Run();
-
+			messageDialog.Destroy();
 			if(result != ResponseType.Yes)
 			{
-				messageDialog.Destroy();
+				//messageDialog.Destroy();
+				return;
 			}
 
+			ArticuloDao.delete(treeView);
+			//messageDialog.Destroy();
+			refreshAction.Activate();
 
 		};
 

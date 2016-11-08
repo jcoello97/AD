@@ -57,12 +57,12 @@
       <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="MySql.Data">
-      <HintPath>..\..\..\..\usr\lib\cli\MySql.Data-6.4\MySql.Data.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="Org.InstitutoSerpis.Ad">
-      <HintPath>..\..\AD\Org.InstitutoSerpis.Ad\Org.InstitutoSerpis.Ad\bin\Debug\Org.InstitutoSerpis.Ad.dll</HintPath>
+      <HintPath>..\..\Org.InstitutoSerpis.Ad\Org.InstitutoSerpis.Ad\bin\Debug\Org.InstitutoSerpis.Ad.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\..\Org.InstitutoSerpis.Ad\Org.InstitutoSerpis.Ad\bin\Debug\MySql.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

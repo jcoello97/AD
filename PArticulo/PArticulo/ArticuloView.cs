@@ -28,6 +28,7 @@ namespace PArticulo
 				articulo.Categoria = (long)ComboBoxHelper.GetId(comboboxCategoria);
 
 				ArticuloDao.save(articulo);
+				MainWindow.refrescar.Activate();
 
 			};
 			Fill ();
