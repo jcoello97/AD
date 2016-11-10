@@ -14,11 +14,7 @@ public partial class MainWindow: Gtk.Window
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
-		/*dbConnection = new MySqlConnection (
-			"Database=dbprueba;User Id=root;Password=sistemas"
-			);*/
 		refrescar = refreshAction;
-
 		dbConnection = ConexionSGBD.Instance.dbConnection;
 		dbConnection.Open ();
 
@@ -26,10 +22,8 @@ public partial class MainWindow: Gtk.Window
 
 		treeView.Selection.Changed += delegate {
 			bool selected = treeView.Selection.CountSelectedRows()> 0;
-
 			editAction.Sensitive = selected;
 			deleteAction.Sensitive = selected;
-			Console.WriteLine("Ha ocurrido el evento selection changed "+selected);
 
 		};
 		
@@ -42,24 +36,13 @@ public partial class MainWindow: Gtk.Window
 
 		};
 		deleteAction.Activated += delegate{
-			MessageDialog messageDialog = new MessageDialog(
-				this,
-				DialogFlags.Modal,
-				MessageType.Question,
-				ButtonsType.YesNo,"¿Estas seguro que quieres eliminarlo?"
-				);
-			messageDialog.Title = "WARNING BORRAR";
-			ResponseType result = (ResponseType) messageDialog.Run();
-			messageDialog.Destroy();
-			if(result != ResponseType.Yes)
-			{
-				//messageDialog.Destroy();
-				return;
-			}
 
-			ArticuloDao.delete(treeView);
-			//messageDialog.Destroy();
-			refreshAction.Activate();
+			if(WindowHelper.Confirm(this,"¿Estas seguro que quieres eliminarlo?"))
+			{
+				long id = (long)TreeViewHelper.GetId (treeView);
+				ArticuloDao.delete(id);
+				refreshAction.Activate();
+			}
 
 		};
 

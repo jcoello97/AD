@@ -43,15 +43,15 @@ namespace PArticulo
 			DbCommandHelper.AddParameters(dbCommand,"categoria",articulo.Categoria);
 			dbCommand.ExecuteNonQuery();
 		}
-		public static void delete(TreeView treeView){
+		public static void delete(long id){
 			IDbCommand dbCommand = ConexionSGBD.Instance.dbConnection.CreateCommand();
 
 			dbCommand.CommandText = DELETE_SQL;
 
-			//TODO
-			long id = (long)TreeViewHelper.GetId (treeView);
 			DbCommandHelper.AddParameters(dbCommand,"id",id);
 			dbCommand.ExecuteNonQuery();
+			//TODO: Implementar excepción si no elimina ningún registro.
+
 
 		}
 	}
