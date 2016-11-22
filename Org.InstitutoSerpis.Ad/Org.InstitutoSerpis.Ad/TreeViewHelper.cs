@@ -8,32 +8,7 @@ namespace Org.InstitutoSerpis.Ad
 {
 	public class TreeViewHelper
 	{
-		public static void AppendColumns(TreeView treeView, string[] columnNames) {
-			foreach (string columnName in columnNames) {
-				treeView.AppendColumn (columnName, new CellRendererText (),
-				                       delegate(TreeViewColumn tree_column, CellRenderer cell, TreeModel tree_model, TreeIter iter) {
-					int column = Array.IndexOf(treeView.Columns, tree_column);
-					CellRendererText cellRendererText = (CellRendererText)cell;
-					object value = tree_model.GetValue(iter, column);
-					cellRendererText.Text = value.ToString();
-				}
-				);
-			}
-		}
 
-		public static void AppendColumns(TreeView treeView, Type type) {
-			PropertyInfo[] propertyInfos = type.GetProperties ();
-			List<string> propertyNames = new List<string> ();
-			foreach (PropertyInfo propertyInfo in propertyInfos)
-				propertyNames.Add (propertyInfo.Name);
-			AppendColumns (treeView, propertyNames.ToArray ());
-		}
-
-		/// <summary>
-		/// Appends the columns in the TreeView 
-		/// </summary>
-		/// <param name="treeView">Tree view.</param>
-		/// <param name="list">List.</param>
 		private static void appendColumns(TreeView treeView, IList list) {
 			if (treeView.Columns.Length != 0)
 				return;
@@ -71,6 +46,13 @@ namespace Org.InstitutoSerpis.Ad
 			treeView.Selection.GetSelected(out treeIter);
 			object item = treeView.Model.GetValue(treeIter,0);
 			return item == Null.value ? null : item.GetType ().GetProperty ("Id").GetValue (item, null);
+		}
+
+		public static object GetItem(TreeView treeView)
+		{
+			TreeIter treeIter;
+			treeView.Selection.GetSelected(out treeIter);
+			return treeView.Model.GetValue(treeIter,0);
 		}
 	}
 

@@ -11,32 +11,38 @@ namespace PArticulo
 {
 	public partial class ArticuloView : Gtk.Window
 	{
-		public ArticuloView () : base(Gtk.WindowType.Toplevel)
+		public ArticuloView (Articulo articulo) : base(Gtk.WindowType.Toplevel)
 		{
 			this.Build ();
-			spinButtonPrecio.Value = 0;
-			saveAction.Sensitive = false;
+			entryNombre.Text = articulo.Nombre;
+			spinButtonPrecio.Value = (double) articulo.Precio;
 
-			entryNombre.Changed += delegate {
-				string value = entryNombre.Text.Trim();
-				saveAction.Sensitive = !(value.Length == 0);
-			};
+			FillComboBoxCategoria (articulo.Categoria);
+
+			refreshAction ();
 			saveAction.Activated += delegate {
-				Articulo articulo = new Articulo();
 				articulo.Nombre= entryNombre.Text;
 				articulo.Precio = (decimal)spinButtonPrecio.Value;
-				articulo.Categoria = (long)ComboBoxHelper.GetId(comboboxCategoria);
+				articulo.Categoria = (long?)ComboBoxHelper.GetId(comboboxCategoria);
 
 				ArticuloDao.save(articulo);
 				MainWindow.refrescar.Activate();
 
 			};
-			Fill ();
+			entryNombre.Changed += delegate {
+				refreshAction();
+			};
+
 		}
-		private void Fill()
+		private void refreshAction(){
+			
+			string value = entryNombre.Text.Trim();
+			saveAction.Sensitive = !(value.Length == 0);
+		}
+		private void FillComboBoxCategoria(object categoria)
 		{
-			IList listaCategorias = CategoriaDao.GetList ();
-			ComboBoxHelper.fillComboBox (comboboxCategoria,listaCategorias,"Nombre");
+			IList lista = CategoriaDao.GetList ();
+			ComboBoxHelper.Fill(comboboxCategoria,lista,"Nombre",categoria);
 		}
 
 	}

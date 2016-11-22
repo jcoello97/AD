@@ -19,31 +19,35 @@ public partial class MainWindow: Gtk.Window
 		dbConnection.Open ();
 
 		Fill ();
-
 		treeView.Selection.Changed += delegate {
 			bool selected = treeView.Selection.CountSelectedRows()> 0;
 			editAction.Sensitive = selected;
 			deleteAction.Sensitive = selected;
 
 		};
-		
+
 		refreshAction.Activated += delegate{
 			Fill();
 		};
 
 		newAction.Activated += delegate {
-			new ArticuloView();
-
+			Articulo articulo = new Articulo();
+			articulo.Nombre = string.Empty;
+			articulo.Precio = 0;
+			new ArticuloView(articulo);
 		};
 		deleteAction.Activated += delegate{
 
 			if(WindowHelper.Confirm(this,"¿Estas seguro que quieres eliminarlo?"))
 			{
-				long id = (long)TreeViewHelper.GetId (treeView);
-				ArticuloDao.delete(id);
+				ArticuloDao.delete(TreeViewHelper.GetId (treeView));
 				refreshAction.Activate();
 			}
 
+		};
+		editAction.Activated += delegate {
+			Articulo articulo = ArticuloDao.Load(TreeViewHelper.GetId(treeView));
+			new ArticuloView(articulo);
 		};
 
 	}
@@ -51,7 +55,7 @@ public partial class MainWindow: Gtk.Window
 	{
 		editAction.Sensitive = false;
 		deleteAction.Sensitive = false;
-		IList list = ArticuloDao.getList ();
+		IList list = EntityDao.getList<Articulo> ();
 		TreeViewHelper.Fill (treeView, list);
 	}
 

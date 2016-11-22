@@ -28,7 +28,7 @@ namespace PArticulo
 			this.UIManager.InsertActionGroup (w1, 0);
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "PArticulo.ArticuloView";
-			this.Title = global::Mono.Unix.Catalog.GetString ("Añadir nuevo articulo");
+			this.Title = global::Mono.Unix.Catalog.GetString ("Añadir/Editar articulo");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 			// Container child PArticulo.ArticuloView.Gtk.Container+ContainerChild
 			this.vbox3 = new global::Gtk.VBox ();

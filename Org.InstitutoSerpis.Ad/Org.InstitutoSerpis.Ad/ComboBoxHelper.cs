@@ -8,38 +8,35 @@ namespace Org.InstitutoSerpis.Ad
 {
 	public class ComboBoxHelper
 	{
-		public static void fillComboBox(ComboBox comboBox, IList list, string propertyName)
+		public static void Fill(ComboBox comboBox, IList list, string propertyName, object id)
 		{
 			Type listType = list.GetType ();
 			Type elementType = listType.GetGenericArguments () [0];
-			PropertyInfo propertyInfo = elementType.GetProperty(propertyName);
+			PropertyInfo namePropertyInfo = elementType.GetProperty(propertyName);
+			PropertyInfo idPropertyInfo = elementType.GetProperty("Id");
 
 			ListStore listStore = new ListStore (typeof(object));
 
-			//LA PRIMERA OPCION VACIA
-			Categoria vacio = new Categoria (0L," ");
+			TreeIter initialTreeIter = listStore.AppendValues (Null.value);
 
-
-			listStore.AppendValues (vacio);
 			foreach (object item in list) {
-				listStore.AppendValues (item);
+				TreeIter treeIter = listStore.AppendValues (item);
+				if(idPropertyInfo.GetValue(item,null ).Equals(id))
+				{
+					initialTreeIter = treeIter;
+				}
 			}
+
 			comboBox.Model = listStore;
-
+			comboBox.SetActiveIter (initialTreeIter);
 			CellRendererText cellRendererText = new CellRendererText ();
-
 			comboBox.PackStart (cellRendererText,false);
-
 			comboBox.SetCellDataFunc (cellRendererText,
 			                          delegate(CellLayout cell_layout, CellRenderer cell, TreeModel tree_model, TreeIter iter) 
 			                          {
-				object item = tree_model.GetValue (iter,0);
-				object value = propertyInfo.GetValue(item,null);
-
-				//COMPROBAMOS QUE EL NOMBRE DE LA CATEGORIA ESTA VACIA O NULL, I AÑADIMOS EL VALOR
-				cellRendererText.Text = value == null || value.ToString() == "" ? "<sin asignar>" : value.ToString();
-
-
+				object item = tree_model.GetValue(iter, 0);
+				object value = item == Null.value ? "<sin asignar>" : namePropertyInfo.GetValue(item, null);
+				cellRendererText.Text = value.ToString();
 			});
 		}
 		public static object GetId(ComboBox comboBox)
@@ -47,13 +44,6 @@ namespace Org.InstitutoSerpis.Ad
 			TreeIter treeIter;
 			comboBox.GetActiveIter(out treeIter);
 			object item = comboBox.Model.GetValue(treeIter,0);
-
-			//			if (item == Null.value)
-			//				return null;
-			//			Type elementType = item.GetType ();
-			//			PropertyInfo propertyInfo = elementType.GetProperty ("Id");
-			//
-			//			return propertyInfo.GetValue (item,null);
 			return item == Null.value ? null : item.GetType ().GetProperty ("Id").GetValue (item, null);
 		}
 

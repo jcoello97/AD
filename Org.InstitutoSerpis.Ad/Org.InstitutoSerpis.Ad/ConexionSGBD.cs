@@ -1,8 +1,8 @@
 using System;
 using MySql.Data.MySqlClient;
 using System.Data;
-namespace Org.InstitutoSerpis.Ad
 
+namespace Org.InstitutoSerpis.Ad
 {
 	public class ConexionSGBD
 	{
@@ -25,7 +25,7 @@ namespace Org.InstitutoSerpis.Ad
 			get { return connection;}
 			set { connection = value;}
 		}
-			
+
 	}
 }
 
