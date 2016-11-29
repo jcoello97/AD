@@ -55,6 +55,7 @@
     <Compile Include="WindowHelper.cs" />
     <Compile Include="EntityDao.cs" />
     <Compile Include="ConexionSGBD.cs" />
+    <Compile Include="IEntityDao.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
