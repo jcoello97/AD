@@ -1,5 +1,6 @@
 package org.institutoserpis.ad;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class PedidoMain {
@@ -88,7 +89,9 @@ public class PedidoMain {
 	}
 
 	public static void menuClientes() {
-		boolean salir = false;
+		String nombre = "";
+		boolean salir1 = false;
+		boolean salir2 = false;
 		String opcionElegida;
 		Scanner scanner = new Scanner(System.in);
 		do {
@@ -105,22 +108,62 @@ public class PedidoMain {
 			opcionElegida = scanner.nextLine();
 			switch (opcionElegida) {
 			case "1":
+				System.out.println("\nDime el nombre del nuevo cliente: ");
+				nombre = scanner.next();
+				ClienteDao.createCliente(nombre);
+				System.out.println("Cliente creado.");
 				break;
 			case "2":
+				do {
+					System.out.println("\n Dime el id del cliente: ");
+					long id = scanner.nextLong();
+					if (ClienteDao.existCliente(id)) {
+						Cliente cliente = ClienteDao.getCliente(id);
+						ClienteDao.removeCliente(cliente);
+						System.out.println("Cliente borrado.");
+						salir2 = true;
+					} else {
+						System.out.println("Id del cliente no encontrada.");
+					}
+				} while (salir2 == false);
+				salir2 = false;
 				break;
 			case "3":
+				do {
+					System.out.println("\n Dime el id del cliente:");
+					long id = scanner.nextLong();
+					if (ClienteDao.existCliente(id)) {
+						System.out.println("Dime el nuevo nombre del cliente: ");
+						nombre = scanner.nextLine();
+						Cliente cliente = ClienteDao.getCliente(id);
+						cliente.setNombre(nombre);
+						ClienteDao.updateCliente(cliente);
+						System.out.println("Cliente modificado.");
+						salir2 = true;
+					} else {
+						System.out.println("Id del cliente no encontrada.");
+					}
+				} while (salir2 == false);
+				salir2 = false;
 				break;
 			case "4":
+				System.out.println("LISTADO DE CLIENTES\n");
+				List<Cliente> clientes = ClienteDao.getListClientes();
+				for (Cliente cliente : clientes) {
+					System.out.printf("\tID:%f \tNOMBRE:%s",
+							cliente.getId(),
+							cliente.getNombre());
+				}
 				break;
 			case "5":
-				salir = true;
+				salir1 = true;
 				break;
 			default:
 				System.out.println(
 						"Introduce solo el numero de la opcion deseada.");
 				break;
 			}
-		} while (salir == false);
+		} while (salir1 == false);
 	}
 
 	public static void menuPedidos() {
