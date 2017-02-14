@@ -1,43 +1,35 @@
 package org.institutoserpis.ad;
 
-public class Articulo 
-{
-	String nombre;
-	int categoria;
-	double precio;
-	
-	public Articulo(String nombre, int categoria, double precio) {
-		this.nombre = nombre;
-		this.categoria = categoria;
-		this.precio = precio;
-	}
+import java.math.BigDecimal;
 
+public class Articulo {
+	private long id;
+	private String nombre;
+	private BigDecimal precio;
+	private long categoria;
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
 	public String getNombre() {
 		return nombre;
 	}
-
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-
-	public int getCategoria() {
-		return categoria;
-	}
-
-	public void setCategoria(int categoria) {
-		this.categoria = categoria;
-	}
-
-	public double getPrecio() {
+	public BigDecimal getPrecio() {
 		return precio;
 	}
-
-	public void setPrecio(double precio) {
+	public void setPrecio(BigDecimal precio) {
 		this.precio = precio;
 	}
-	
-	
-	
-	
+	public long getCategoria() {
+		return categoria;
+	}
+	public void setCategoria(long categoria) {
+		this.categoria = categoria;
+	}
 
 }
